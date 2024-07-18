@@ -1,0 +1,83 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Calculator extends JFrame {
+
+    private JTextField numberField;
+    private JTextField percentageField;
+    private JComboBox<String> operationComboBox;
+    private JButton calculateButton;
+    private JLabel resultLabel;
+
+    public Calculator() {
+        setLayout(new FlowLayout());
+
+        JLabel numberLabel = new JLabel("Number:");
+        add(numberLabel);
+
+        numberField = new JTextField(10);
+        add(numberField);
+
+        JLabel percentageLabel = new JLabel("Percentage:");
+        add(percentageLabel);
+
+        percentageField = new JTextField(10);
+        add(percentageField);
+
+        String[] operations = {"Calculate Percentage", "Percentage Increase", "Percentage Decrease", "Find Whole"};
+        operationComboBox = new JComboBox<>(operations);
+        add(operationComboBox);
+
+        calculateButton = new JButton("Calculate");
+        calculateButton.addActionListener(new CalculateButtonListener());
+        add(calculateButton);
+
+        resultLabel = new JLabel("Result:");
+        add(resultLabel);
+
+        setSize(300, 150);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setVisible(true);
+    }
+
+    private class CalculateButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                double number = Double.parseDouble(numberField.getText());
+                double percentage = Double.parseDouble(percentageField.getText());
+                String operation = (String) operationComboBox.getSelectedItem();
+
+                double result;
+                switch (operation) {
+                    case "Calculate Percentage":
+                        result = (number / 100) * percentage;
+                        break;
+                    case "Percentage Increase":
+                        result = number + (number * (percentage / 100));
+                        break;
+                    case "Percentage Decrease":
+                        result = number - (number * (percentage / 100));
+                        break;
+                    case "Find Whole":
+                        result = (number * 100) / percentage;
+                        break;
+                    default:
+                        throw new Exception("Invalid operation");
+                }
+
+                resultLabel.setText("Result: " + String.format("%.2f", result));
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(Calculator.this, "Invalid input. Please enter valid numbers.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(Calculator.this, "An error occurred. Please try again.");
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        new Calculator();
+    }
+}
